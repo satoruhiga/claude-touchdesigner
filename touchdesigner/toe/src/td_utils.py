@@ -283,20 +283,30 @@ def PrintLayout(self, base: OP | None = None) -> None:
         print(f"{child.name}: ({child.nodeX}, {child.nodeY}) [{child.family}]")
 
 
-def CheckErrors(self, target: OP | str | None = None, recurse: bool = True) -> str:
+def CheckErrors(self, target: OP | str, recurse: bool = True) -> str:
     """Check and print errors.
 
     Args:
-        target: Operator or path string (defaults to ownerComp.parent())
+        target: Operator or path string (required)
         recurse: Check children recursively
 
     Returns:
         str: Error string or empty
+
+    Raises:
+        ValueError: If target is None or invalid path
     """
     if target is None:
-        target = self.ownerComp.parent()
-    elif isinstance(target, str):
-        target = op(target)
+        raise ValueError("target is required and cannot be None")
+
+    if isinstance(target, str):
+        resolved = op(target)
+        if resolved is None:
+            raise ValueError(f"Invalid operator path: {target}")
+        target = resolved
+
+    # Force cook to detect errors
+    target.cook(force=True)
 
     errors = target.errors(recurse=recurse)
     if errors:
