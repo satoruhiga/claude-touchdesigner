@@ -1,0 +1,7 @@
+{
+  "name": "touchdesigner",
+  "description": "TouchDesigner integration for Claude Code - Execute Python, query editor state, and manage operators",
+  "author": {
+    "name": "satoruhiga"
+  }
+}

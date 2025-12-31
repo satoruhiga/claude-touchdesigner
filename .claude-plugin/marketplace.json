@@ -1,0 +1,16 @@
+{
+  "name": "claude-touchdesigner",
+  "description": "Claude Code plugins for TouchDesigner",
+  "owner": {
+    "name": "Satoru Higa",
+    "email": "satoruhiga@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "touchdesigner",
+      "source": "./touchdesigner",
+      "description": "TouchDesigner integration for Claude Code - Execute Python, query editor state, and manage operators",
+      "version": "0.1.0"
+    }
+  ]
+}

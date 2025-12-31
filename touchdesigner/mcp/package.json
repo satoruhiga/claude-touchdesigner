@@ -1,0 +1,12 @@
+{
+  "name": "td-mcp",
+  "version": "0.1.0",
+  "description": "TouchDesigner MCP Server",
+  "type": "module",
+  "main": "dist/index.js",
+  "dependencies": {
+    "td-api": "*",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.24.0"
+  }
+}

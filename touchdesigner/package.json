@@ -1,0 +1,19 @@
+{
+  "name": "claude-touchdesigner",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TouchDesigner integration for Claude Code",
+  "type": "module",
+  "workspaces": [
+    "api",
+    "mcp"
+  ],
+  "scripts": {
+    "build": "esbuild mcp/src/index.ts --bundle --platform=node --format=esm --outfile=mcp/dist/index.js",
+    "build:watch": "npm run build -- --watch",
+    "clean": "rm -rf api/dist mcp/dist node_modules"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  }
+}
