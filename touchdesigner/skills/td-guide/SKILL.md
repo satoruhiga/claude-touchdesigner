@@ -6,28 +6,93 @@ version: 0.1.0
 
 # TouchDesigner Guide
 
-@reference/basics.md
-
 Use this skill when creating, modifying, or debugging TouchDesigner networks via the MCP API.
 
 ---
 
-## MANDATORY: Read Reference Files Before Implementation
+## CRITICAL: Your Prior Knowledge is Unreliable
 
-**You MUST read the corresponding reference file(s) before working on any topic.**
+TouchDesigner is a visual programming environment. **Your pre-trained knowledge about TD is very likely incorrect.**
 
-This is NOT optional. Skipping this step will result in incorrect patterns and wasted effort.
+**Assume your memory is completely unreliable.** Always gather accurate information first:
+- This document and reference files
+- Context7 for official TD API documentation
+- `op.TDAPI.GetParameterList()` for parameter names
 
-| When working on... | You MUST read... |
+### Before Starting ANY Task
+
+**Output "Gathering information first" and collect reliable information before implementation.**
+
+1. Read `reference/basics.md` (REQUIRED for all tasks)
+2. Read topic-specific reference files as needed
+3. Verify parameter names using `op.TDAPI.GetParameterList()`
+4. Ask yourself: "Do I have sufficient reliable information to proceed?"
+5. Only if yes, start implementation
+
+---
+
+## REQUIRED: Read basics.md First
+
+**You MUST read `reference/basics.md` before any implementation.**
+
+This file contains essential patterns for operator creation, layout, and error handling that differ from standard TD API.
+
+---
+
+## op.TDAPI - ALWAYS USE THESE
+
+**You MUST use `op.TDAPI` utilities instead of raw TD API.**
+
+### Create Operators
+
+```python
+# ALWAYS use CreateOp (auto sets viewer=True, handles docked operators)
+new_op = op.TDAPI.CreateOp(base, gridSOP, 'grid1', x=0, y=0)
+
+# DON'T use raw API directly
+# new_op = base.create(gridSOP, 'grid1')  # WRONG - misses viewer, docked handling
+```
+
+### Chain Operators
+
+```python
+# Auto-connects and layouts with 200px spacing
+chain = op.TDAPI.ChainOperators([grid, noise, null])
+```
+
+### Check Errors
+
+```python
+# Pass op() object, NOT string path
+op.TDAPI.CheckErrors(op('/project1/base1'), recurse=True)
+
+# IMPORTANT: Error cache updates on frame boundaries
+# After fixing, check in SEPARATE td_execute call:
+#   td_execute 1: Fix the error
+#   td_execute 2: cook + CheckErrors
+```
+
+### Verify Parameters Before Setting
+
+```python
+# TD parameter names are unpredictable (e.g., radius vs radx/rady/radz)
+# ALWAYS check first using GetParameterList:
+params = op.TDAPI.GetParameterList('sphereSOP')
+print(params)  # ['radx', 'rady', 'radz', ...]
+```
+
+---
+
+## Reference Files
+
+| When working on... | Read... |
 |-------------------|------------------|
-| Choosing operators, understanding families, data conversion | `reference/operator-families.md` |
-| Creating/connecting operators, network layout, positioning | `reference/basics.md` |
-| Geometry COMP setup, In/Out patterns, Instancing | `reference/geometry-comp.md` |
+| **ALL tasks** | **`reference/basics.md`** (REQUIRED) |
+| Operator families, data conversion | `reference/operator-families.md` |
+| Geometry COMP, Instancing | `reference/geometry-comp.md` |
 | Rendering, Camera, Light | `reference/rendering.md` |
-| GLSL TOP/MAT, shaders, uniforms | `reference/glsl.md` |
-| Feedback loops, simulations, trails | `reference/operator-tips.md` |
-
-**Multiple topics?** Read all relevant files.
+| GLSL TOP/MAT, shaders | `reference/glsl.md` |
+| Feedback loops, simulations | `reference/operator-tips.md` |
 
 ---
 
