@@ -6,6 +6,8 @@ version: 0.1.0
 
 # TouchDesigner Guide
 
+@reference/basics.md
+
 Use this skill when creating, modifying, or debugging TouchDesigner networks via the MCP API.
 
 ---

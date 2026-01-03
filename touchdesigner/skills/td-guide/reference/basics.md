@@ -84,7 +84,20 @@ dat[0, 0].val           # Cell value
 
 ### Find Parameters
 
+**Always verify parameter names before setting them.** TD parameter names are often unpredictable (e.g., `radius` vs `radx/rady/radz`).
+
 ```python
+# Check parameters before setting
+sphere = op('/project1/base1/sphere1')
+print([p.name for p in sphere.pars() if 'rad' in p.name.lower()])
+# Output: ['radx', 'rady', 'radz']
+
+# Or use TDAPI helper
+params = op.TDAPI.GetParameterList('sphereSOP')
+```
+
+```python
+# Search for specific parameter patterns
 for p in op('glsl1').pars():
     if 'vec' in p.name.lower():
         print(f"{p.name}: {p.val}")
@@ -297,12 +310,30 @@ GLSL TOP/MAT, Script SOP create associated DATs.
 ### Check Errors
 
 ```python
-# Using utility
-op.TDAPI.CheckErrors(target, recurse=True)
+# Using utility - pass op() object, NOT string path
+op.TDAPI.CheckErrors(op('/project1/base1'), recurse=True)
 
 # Raw TD API
 err = op('/project1/base1').errors(recurse=True)
 ```
+
+**IMPORTANT: Error Cache Timing**
+
+TD updates error state on frame boundaries. When fixing errors via MCP:
+
+1. Fix in one `td_execute` call
+2. Check errors in a **separate** `td_execute` call
+
+```python
+# td_execute 1: Fix the error
+const.par.value.expr = 'math.sin(absTime.seconds)'
+
+# td_execute 2: Verify (must be separate call)
+op('/project1/base1').cook(force=True)
+result = op.TDAPI.CheckErrors(op('/project1/base1'), recurse=True)
+```
+
+If you check errors in the same `td_execute` as the fix, you'll see stale cached errors.
 
 ### Print Layout
 
