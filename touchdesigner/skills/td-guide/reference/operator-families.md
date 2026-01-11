@@ -95,38 +95,27 @@ When encountering an unfamiliar operator family:
 Extracts point attributes (position, normals, custom attributes) from SOP geometry into CHOP channels.
 
 ```python
-sop2chop = base.create(soptoCHOP, 'sopto1')
-sop2chop.viewer = True
+sop2chop = op.TDAPI.CreateOp(base, soptoCHOP, 'sopto1', x=0, y=0)
 sop2chop.par.sop = 'null1'
-# Generates channels: tx, ty, tz (from point positions)
-# Can also extract: N (normals), custom attributes
+# Generates channels: tx, ty, tz, nx, ny, nz, etc.
 ```
-
-**Channel names generated:**
-- Position: `tx`, `ty`, `tz`
-- Normals: `nx`, `ny`, `nz`
-- Custom attributes: by attribute name
 
 ### CHOP to SOP
 
-Converts CHOP channel data back into SOP point positions/attributes. Useful for modifying geometry via CHOPs.
+Converts CHOP channel data back into SOP point positions/attributes.
 
 ```python
-chop2sop = base.create(choptoSOP, 'chopto1')
-chop2sop.viewer = True
+chop2sop = op.TDAPI.CreateOp(base, choptoSOP, 'chopto1', x=0, y=0)
 chop2sop.par.chop = 'null_chop'
 # Maps channels tx, ty, tz → point positions P(0), P(1), P(2)
 ```
-
-**Workflow**: SOP → soptoCHOP → (modify in CHOPs) → choptoSOP → back to SOP
 
 ### CHOP to POP
 
 Creates POP points from CHOP channel data.
 
 ```python
-chop2pop = base.create(choptoPOP, 'choptopop1')
-chop2pop.viewer = True
+chop2pop = op.TDAPI.CreateOp(base, choptoPOP, 'choptopop1', x=0, y=0)
 chop2pop.par.chop = 'null_chop'
 ```
 
@@ -135,18 +124,16 @@ chop2pop.par.chop = 'null_chop'
 Converts SOP geometry to POP points (CPU → GPU).
 
 ```python
-sop2pop = base.create(soptoPOP, 'soptopop1')
-sop2pop.viewer = True
+sop2pop = op.TDAPI.CreateOp(base, soptoPOP, 'soptopop1', x=0, y=0)
 sop2pop.par.sop = op('null1')  # Requires op() reference, not string
 ```
 
 ### CHOP to TOP
 
-Visualizes CHOP data as a texture (useful for debugging or GPU processing).
+Visualizes CHOP data as a texture.
 
 ```python
-chop2top = base.create(choptoTOP, 'choptotop1')
-chop2top.viewer = True
+chop2top = op.TDAPI.CreateOp(base, choptoTOP, 'choptotop1', x=0, y=0)
 chop2top.par.chop = 'null_chop'
 ```
 
@@ -155,8 +142,7 @@ chop2top.par.chop = 'null_chop'
 Extracts pixel values from TOP as CHOP channels.
 
 ```python
-top2chop = base.create(toptoCHOP, 'toptochop1')
-top2chop.viewer = True
+top2chop = op.TDAPI.CreateOp(base, toptoCHOP, 'toptochop1', x=0, y=0)
 top2chop.par.top = 'null_top'
 ```
 
@@ -165,10 +151,8 @@ top2chop.par.top = 'null_top'
 Converts CHOP channels to a table (rows = samples, columns = channels).
 
 ```python
-chop2dat = base.create(choptoDAT, 'choptodat1')
-chop2dat.viewer = True
+chop2dat = op.TDAPI.CreateOp(base, choptoDAT, 'choptodat1', x=0, y=0)
 chop2dat.par.chop = 'sopto1'
-# Output: 400 rows x 3 cols (tx, ty, tz)
 ```
 
 ### SOP to DAT
@@ -176,8 +160,7 @@ chop2dat.par.chop = 'sopto1'
 Exports SOP point data to a table with headers.
 
 ```python
-sop2dat = base.create(soptoDAT, 'soptodat1')
-sop2dat.viewer = True
+sop2dat = op.TDAPI.CreateOp(base, soptoDAT, 'soptodat1', x=0, y=0)
 sop2dat.par.sop = 'null1'
 # Headers: index, P(0), P(1), P(2), Pw, N(0), N(1), N(2), groups
 ```
@@ -187,10 +170,8 @@ sop2dat.par.sop = 'null1'
 Exports POP point data to a table.
 
 ```python
-pop2dat = base.create(poptoDAT, 'poptodat1')
-pop2dat.viewer = True
+pop2dat = op.TDAPI.CreateOp(base, poptoDAT, 'poptodat1', x=0, y=0)
 pop2dat.par.pop = 'null_pop'
-# Headers: index, P(0), P(1), P(2), N(0), N(1), N(2)
 ```
 
 ### Points Only Won't Render
@@ -200,8 +181,7 @@ SOP points alone don't render - they need primitives.
 **Solution**: Convert to particles:
 
 ```python
-convert = base.create(convertSOP, 'convert1')
-convert.viewer = True
+convert = op.TDAPI.CreateOp(base, convertSOP, 'convert1', x=0, y=0)
 convert.par.totype = 'particlesperpoint'
 convert.inputConnectors[0].connect(point_sop)
 ```

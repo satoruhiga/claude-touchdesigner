@@ -7,7 +7,6 @@
 3. [Light](#light)
 4. [Material](#material)
 5. [Render TOP](#render-top)
-6. [Save Image](#save-image)
 
 ---
 
@@ -21,10 +20,10 @@
 
 ```python
 # Minimal setup
-cam = base.create(cameraCOMP, 'cam1')
-light = base.create(lightCOMP, 'light1')
-geo = base.create(geometryCOMP, 'geo1')
-render = base.create(renderTOP, 'render1')
+cam = op.TDAPI.CreateOp(base, cameraCOMP, 'cam1', x=0, y=0)
+light = op.TDAPI.CreateOp(base, lightCOMP, 'light1', x=200, y=0)
+geo, in_sop, out_sop = op.TDAPI.CreateGeometryComp(base, 'geo1', x=400, y=0)
+render = op.TDAPI.CreateOp(base, renderTOP, 'render1', x=600, y=0)
 
 render.par.camera = 'cam1'
 render.par.geometry = 'geo1'
@@ -38,8 +37,7 @@ render.par.lights = 'light1'
 ### Create Camera
 
 ```python
-cam = base.create(cameraCOMP, 'cam1')
-cam.viewer = True
+cam = op.TDAPI.CreateOp(base, cameraCOMP, 'cam1', x=0, y=0)
 ```
 
 ### Key Parameters
@@ -84,10 +82,7 @@ cam.par.orthowidth = 4
 ### Create Light
 
 ```python
-light = base.create(lightCOMP, 'light1')
-light.viewer = True
-
-# Position
+light = op.TDAPI.CreateOp(base, lightCOMP, 'light1', x=0, y=0)
 light.par.tx, light.par.ty, light.par.tz = 5, 5, 5
 ```
 
@@ -106,7 +101,7 @@ light.par.tx, light.par.ty, light.par.tz = 5, 5, 5
 ### Ambient Light
 
 ```python
-ambient = base.create(ambientlightCOMP, 'ambient1')
+ambient = op.TDAPI.CreateOp(base, ambientlightCOMP, 'ambient1', x=0, y=0)
 ambient.par.dimmer = 0.2
 ```
 
@@ -129,16 +124,14 @@ ambient.par.dimmer = 0.2
 geo.par.material = 'pbr1'
 
 # Method 2: Material SOP (inside Geometry COMP)
-mat_sop = geo.create(materialSOP, 'material1')
+mat_sop = op.TDAPI.CreateOp(geo, materialSOP, 'material1', x=0, y=-100)
 mat_sop.par.mat = '../pbr1'  # Relative path to parent
 ```
 
 ### PBR MAT
 
 ```python
-pbr = base.create(pbrMAT, 'pbr1')
-
-# Key parameters
+pbr = op.TDAPI.CreateOp(base, pbrMAT, 'pbr1', x=0, y=0)
 pbr.par.basecolorr = 0.8
 pbr.par.basecolorg = 0.2
 pbr.par.basecolorb = 0.2
@@ -149,9 +142,7 @@ pbr.par.roughness = 0.5     # 0=smooth, 1=rough
 ### Phong MAT
 
 ```python
-phong = base.create(phongMAT, 'phong1')
-
-# Key parameters
+phong = op.TDAPI.CreateOp(base, phongMAT, 'phong1', x=0, y=0)
 phong.par.diffr, phong.par.diffg, phong.par.diffb = 0.7, 0.7, 0.7
 phong.par.specr, phong.par.specg, phong.par.specb = 0.3, 0.3, 0.3
 phong.par.shine = 24  # Shininess
@@ -160,7 +151,7 @@ phong.par.shine = 24  # Shininess
 ### Constant MAT (No Lighting)
 
 ```python
-const = base.create(constantMAT, 'const1')
+const = op.TDAPI.CreateOp(base, constantMAT, 'const1', x=0, y=0)
 const.par.colorr, const.par.colorg, const.par.colorb = 1, 0, 0
 ```
 
@@ -195,18 +186,3 @@ render.par.camera = 'cam_closeup'
 ```
 
 See [Pattern Matching](basics.md#pattern-matching) for full syntax.
-
----
-
-## Save Image
-
-```python
-import tempfile, os
-
-# Reuse same filename to avoid disk bloat
-PREVIEW_PATH = os.path.join(tempfile.gettempdir(), 'td_preview.jpg')
-op('/project1/render1').save(PREVIEW_PATH)
-
-# Clean up after
-os.remove(PREVIEW_PATH)
-```

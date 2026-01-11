@@ -8,6 +8,7 @@
 4. [Pattern Matching](#pattern-matching)
 5. [Network Design Patterns](#network-design-patterns)
 6. [Debugging](#debugging)
+7. [Saving Data](#saving-data)
 
 ---
 
@@ -21,14 +22,15 @@ OpenGL (right-handed): Y-up, Z toward camera, SRT order default.
 
 ### Create Operator
 
-```python
-# Use CreateOp utility (auto sets viewer=True, handles docked operators)
-new_op = op.TDAPI.CreateOp(base, glslTOP, 'glsl1', x=0, y=0)
+**Always use `op.TDAPI.CreateOp()` instead of raw API.**
 
-# Or raw TD API (must set viewer manually)
-new_op = op('/project1').create(glslTOP, 'glsl1')
-new_op.viewer = True  # Always set this
+```python
+new_op = op.TDAPI.CreateOp(base, glslTOP, 'glsl1', x=0, y=0)
 ```
+
+**Why CreateOp:**
+- **Auto `viewer = True`** - Matches UI-created operator behavior
+- **Docked operator handling** - GLSL TOP/MAT create associated DATs (_pixel, _vertex, etc.). CreateOp uses MoveOp internally, which moves docked operators together. Raw `nodeX`/`nodeY` assignment leaves docked operators behind.
 
 **Name auto-increment:** If an operator with the same name exists, TD automatically increments the number (e.g., `null1` → `null2`). Always check the returned operator's `.name` if you need the actual name.
 
@@ -351,4 +353,59 @@ for child in base.children:
 ```python
 for d in op('glslmat1').docked:
     print(f"{d.name}: {d.opType}")
+```
+
+---
+
+## Saving Data
+
+Use `.save()` method to export operator data to files.
+
+### TOP → Image
+
+```python
+import tempfile, os
+
+# Save to temp file (reuse same filename to avoid disk bloat)
+PREVIEW_PATH = os.path.join(tempfile.gettempdir(), 'td_preview.jpg')
+op('/project1/render1').save(PREVIEW_PATH)
+
+# Supported formats: .jpg, .png, .tiff, .exr, etc.
+# Clean up after use
+os.remove(PREVIEW_PATH)
+```
+
+### CHOP → .clip
+
+```python
+# Save channel data as .clip (text-based format)
+chop = op('/project1/noise1')
+chop.save(project.folder + '/noise1.clip')
+```
+
+`.clip` format stores:
+- `rate` - Frame rate
+- `tracklength` - Number of samples
+- `tracks` - Channel count
+- Per-track: `name` and `data_rle` (sample values)
+
+### DAT → .csv / .tsv
+
+```python
+# Save table data as CSV
+dat = op('/project1/table1')
+dat.save(project.folder + '/table1.csv')
+
+# Or TSV (tab-separated)
+dat.save(project.folder + '/table1.tsv')
+```
+
+Output includes header row from first row of DAT.
+
+### SOP → .obj
+
+```python
+# Save geometry as OBJ
+sop = op('/project1/sphere1')
+sop.save(project.folder + '/sphere1.obj')
 ```

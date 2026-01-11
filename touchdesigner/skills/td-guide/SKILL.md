@@ -23,19 +23,18 @@ TouchDesigner is a visual programming environment. **Your pre-trained knowledge 
 
 **Output "Gathering information first" and collect reliable information before implementation.**
 
-1. Read `reference/basics.md` (REQUIRED for all tasks)
-2. Read topic-specific reference files as needed
-3. Verify parameter names using `op.TDAPI.GetParameterList()`
-4. Ask yourself: "Do I have sufficient reliable information to proceed?"
-5. Only if yes, start implementation
+1. Read all `.md` files in `reference/` (REQUIRED for all tasks)
+2. Verify parameter names using `op.TDAPI.GetParameterList()`
+3. Ask yourself: "Do I have sufficient reliable information to proceed?"
+4. Only if yes, start implementation
 
 ---
 
-## REQUIRED: Read basics.md First
+## REQUIRED: Read All Reference Files First
 
-**You MUST read `reference/basics.md` before any implementation.**
+**You MUST read all `.md` files in `reference/` before any implementation.**
 
-This file contains essential patterns for operator creation, layout, and error handling that differ from standard TD API.
+These files contain essential patterns for operator creation, layout, error handling, and best practices that differ from standard TD API.
 
 ---
 
@@ -161,3 +160,15 @@ Example: "Create instanced particles in a sphere shape"
 | **COMP** | Component | Containers, scenes |
 
 For detailed family info, operator lists, and cross-family patterns, see `reference/operator-families.md`.
+
+---
+
+## Skill Maintenance
+
+When the user provides feedback about this skill (corrections, improvements, missing patterns, etc.):
+
+1. Propose updates to the relevant `.md` files in this skill
+2. Show the user the proposed changes before applying
+3. Update `SKILL.md` or `reference/*.md` as appropriate
+
+This ensures the skill stays accurate and improves over time based on real usage.

@@ -12,26 +12,17 @@
 
 ## Geometry COMP Pattern (SOP and POP)
 
-The same pattern works for both SOP and POP:
+Use `CreateGeometryComp` - it handles default torus removal and In/Out setup automatically:
 
 ```python
-# SOP version
-geo = base.create(geometryCOMP, 'geo1')
-for child in geo.children:
-    child.destroy()
-in_sop = geo.create(inSOP, 'in1')
-out_sop = geo.create(outSOP, 'out1')
-out_sop.inputConnectors[0].connect(in_sop)
-geo.inputConnectors[0].connect(external_sop)
+# SOP version - auto-detects family from input_op
+geo, in_sop, out_sop = op.TDAPI.CreateGeometryComp(base, 'geo1', input_op=external_sop, x=0, y=0)
 
-# POP version - same pattern, different operators
-geo = base.create(geometryCOMP, 'geo1')
-for child in geo.children:
-    child.destroy()
-in_pop = geo.create(inPOP, 'in1')
-out_pop = geo.create(outPOP, 'out1')
-out_pop.inputConnectors[0].connect(in_pop)
-geo.inputConnectors[0].connect(external_pop)
+# POP version - same API, auto-detects POP family
+geo, in_pop, out_pop = op.TDAPI.CreateGeometryComp(base, 'geo1', input_op=external_pop, x=0, y=0)
+
+# Without input connection
+geo, in_op, out_op = op.TDAPI.CreateGeometryComp(base, 'geo1', x=0, y=0)
 ```
 
 ---
@@ -39,24 +30,13 @@ geo.inputConnectors[0].connect(external_pop)
 ## Setup Pattern (Full Example)
 
 ```python
-geo = base.create(geometryCOMP, 'geo1')
-geo.viewer = True
-
-# Remove default torus
-for child in geo.children:
-    child.destroy()
-
-# Create In/Out
-in_sop = geo.create(inSOP, 'in1')
-in_sop.viewer = True
-out_sop = geo.create(outSOP, 'out1')
-out_sop.viewer = True
-out_sop.inputConnectors[0].connect(in_sop)
-out_sop.display = True
-out_sop.render = True
-
-# Connect from parent level
-geo.inputConnectors[0].connect(some_sop)
+# CreateGeometryComp handles everything:
+# - Creates Geometry COMP
+# - Removes default torus
+# - Creates In/Out (SOP or POP based on input_op family)
+# - Sets viewer=True, display=True, render=True on out_op
+# - Connects input_op if provided
+geo, in_sop, out_sop = op.TDAPI.CreateGeometryComp(base, 'geo1', input_op=some_sop, x=0, y=0)
 ```
 
 ---
@@ -65,12 +45,27 @@ geo.inputConnectors[0].connect(some_sop)
 
 **These patterns cause debugging nightmares. NEVER do these.**
 
-### DO NOT: Create geometry inside Geometry COMP
+### DO NOT: Use RAW API for Geometry COMP
 
 ```python
 # BAD - Don't do this!
 geo = base.create(geometryCOMP, 'geo1')
-box = geo.create(boxPOP, 'box1')  # WRONG!
+geo.viewer = True
+for child in geo.children:
+    child.destroy()
+in_sop = geo.create(inSOP, 'in1')
+out_sop = geo.create(outSOP, 'out1')
+# ... tedious manual setup
+```
+
+**Why it's bad**: Error-prone, verbose, easy to forget steps (viewer, display, render flags). Use `CreateGeometryComp` instead.
+
+### DO NOT: Create geometry inside Geometry COMP
+
+```python
+# BAD - Don't do this!
+geo, in_pop, out_pop = op.TDAPI.CreateGeometryComp(base, 'geo1', x=0, y=0)
+box = op.TDAPI.CreateOp(geo, boxPOP, 'box1', x=0, y=0)  # WRONG!
 ```
 
 **Why it's bad**: Can't see what's happening without entering COMP. Network structure becomes unclear from parent level.
@@ -93,17 +88,12 @@ choptopop1.par.chop = '../null1'  # WRONG!
 
 ```python
 # GOOD: shape at parent level
-box = base.create(boxPOP, 'box1')
-null_box = base.create(nullPOP, 'null_box')
+box = op.TDAPI.CreateOp(base, boxPOP, 'box1', x=0, y=0)
+null_box = op.TDAPI.CreateOp(base, nullPOP, 'null_box', x=200, y=0)
 null_box.inputConnectors[0].connect(box)
 
-geo = base.create(geometryCOMP, 'geo1')
-# In/Out inside geo
-in_pop = geo.create(inPOP, 'in1')
-out_pop = geo.create(outPOP, 'out1')
-out_pop.inputConnectors[0].connect(in_pop)
-
-geo.inputConnectors[0].connect(null_box)
+# CreateGeometryComp auto-detects POP family from null_box
+geo, in_pop, out_pop = op.TDAPI.CreateGeometryComp(base, 'geo1', input_op=null_box, x=400, y=0)
 geo.par.instanceop = 'null_chop'  # Relative path
 ```
 
