@@ -10,7 +10,7 @@
       "name": "touchdesigner",
       "source": "./touchdesigner",
       "description": "TouchDesigner integration for Claude Code - Execute Python, query editor state, and manage operators",
-      "version": "0.1.3"
+      "version": "0.1.4"
     }
   ]
 }
