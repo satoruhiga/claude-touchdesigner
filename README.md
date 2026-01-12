@@ -55,6 +55,37 @@ The plugin includes a `td-guide` skill with reference documentation for:
 - GLSL shaders (TOP, MAT, POP)
 - Feedback loops and simulations
 
+## Configuration
+
+### Port Settings
+
+By default, the MCP server connects to TouchDesigner on port `55555`. You can change this using the `TDAPI_PORT` environment variable.
+
+**macOS / Linux:**
+```bash
+TDAPI_PORT=12345 claude
+```
+
+**Windows (Command Prompt):**
+```cmd
+set TDAPI_PORT=12345
+claude
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:TDAPI_PORT="12345"
+claude
+```
+
+To set the port permanently on Windows, add `TDAPI_PORT` to System Environment Variables:
+1. Open **Settings** > **System** > **About** > **Advanced system settings**
+2. Click **Environment Variables**
+3. Under User or System variables, click **New**
+4. Set Variable name: `TDAPI_PORT`, Variable value: your port number
+
+The port must match the `Port` parameter in the `TouchDesignerAPI.tox` component inside TouchDesigner.
+
 ## Requirements
 
 - TouchDesigner 2024 or later

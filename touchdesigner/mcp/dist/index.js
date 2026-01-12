@@ -20733,7 +20733,7 @@ var EMPTY_COMPLETION_RESULT = {
 };
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
-import process from "node:process";
+import process2 from "node:process";
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/shared/stdio.js
 var ReadBuffer = class {
@@ -20765,7 +20765,7 @@ function serializeMessage(message) {
 
 // node_modules/@modelcontextprotocol/sdk/dist/esm/server/stdio.js
 var StdioServerTransport = class {
-  constructor(_stdin = process.stdin, _stdout = process.stdout) {
+  constructor(_stdin = process2.stdin, _stdout = process2.stdout) {
     this._stdin = _stdin;
     this._stdout = _stdout;
     this._readBuffer = new ReadBuffer();
@@ -20829,7 +20829,7 @@ var TDClient = class {
   baseUrl;
   constructor(options = {}) {
     const host = options.host ?? "localhost";
-    const port = options.port ?? 9980;
+    const port = options.port ?? parseInt(process.env.TDAPI_PORT ?? "55555", 10);
     this.baseUrl = `http://${host}:${port}`;
   }
   /** Execute Python code in TouchDesigner */

@@ -55,7 +55,8 @@ export class TDClient {
 
   constructor(options: TDClientOptions = {}) {
     const host = options.host ?? "localhost";
-    const port = options.port ?? 9980;
+    const port =
+      options.port ?? parseInt(process.env.TDAPI_PORT ?? "55555", 10);
     this.baseUrl = `http://${host}:${port}`;
   }
 
