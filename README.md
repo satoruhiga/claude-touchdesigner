@@ -88,7 +88,7 @@ The port must match the `Port` parameter in the `TouchDesignerAPI.tox` component
 
 ## Requirements
 
-- TouchDesigner 2024 or later
+- TouchDesigner 2025 or later
 - Claude Code CLI
 - Node.js (for MCP server)
 
