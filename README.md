@@ -59,7 +59,7 @@ The plugin includes a `td-guide` skill with reference documentation for:
 
 ### Port Settings
 
-By default, the MCP server connects to TouchDesigner on port `55555`. You can change this using the `TDAPI_PORT` environment variable.
+By default, the MCP server connects to TouchDesigner on port `44444`. You can change this using the `TDAPI_PORT` environment variable.
 
 **macOS / Linux:**
 ```bash

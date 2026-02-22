@@ -20829,7 +20829,7 @@ var TDClient = class {
   baseUrl;
   constructor(options = {}) {
     const host = options.host ?? "localhost";
-    const port = options.port ?? parseInt(process.env.TDAPI_PORT ?? "55555", 10);
+    const port = options.port ?? parseInt(process.env.TDAPI_PORT ?? "44444", 10);
     this.baseUrl = `http://${host}:${port}`;
   }
   /** Execute Python code in TouchDesigner */
